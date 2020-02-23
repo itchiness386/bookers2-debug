@@ -1,19 +1,32 @@
+<div class="container">
 
-<div class="row">
-	<div class="col-xs-3">
+	<div class="row">
+		<div class="col-xs-3">
 
-		<h2>User info</h2>
-		<%= render 'users/profile' %>
+			<h2>User info</h2>
+			<%= render 'users/profile', user: @user %>
 
-		<h2>New book</h2>
-		<%= render 'books/newform' %>
+			<h2>New book</h2>
 
-	</div>
+			<% if @newbook.errors.any? %>
+			  <div id="error_explanation">
+			  <h3><%= pluralize(@newbook.errors.count, "error") %> prohibited this obj from being saved:</h3>
+			    <ul>
+			      <% @newbook.errors.full_messages.each do |message| %>
+			        <li><%= message %></li>
+			      <% end %>
+			    </ul>
+			  </div>
+			<% end %>
 
-	<div class="col-xs-9">
-		<h2>Book detail</h2>
+			<%= render 'books/newform', book: @newbook %>
 
-		<table class="table">
+		</div>
+
+		<div class="col-xs-9">
+			<h2>Book detail</h2>
+
+			<table class="table">
 				<tr>
 					<td>
 						<%= link_to (@book.user) do %>
@@ -23,11 +36,17 @@
 					</td>
 					<td><%= link_to @book.title, @book %></td>
 					<td><%= @book.body %></td>
-					<td><%= link_to "Edit",edit_book_path(@book), class: "btn-sm btn-success edit_book_#{@book.id}" %></td>
-					<td><%= link_to "Destroy",@book, method: :delete, data: {confirm: "本当に削除してもよろしいですか？"}, class: "btn-sm btn-danger destroy_book_#{@book.id}" %></td>
+					<% if @user == current_user %>
+						<td>
+							<%= link_to 'Edit', edit_book_path(@book.id), class: "btn-sm btn-success edit_book_#{@book.id}" %>
+						</td>
+						<td>
+							<%= link_to 'Destroy', book_path(@book.id), method: :delete, "data-confirm" => "本当に消しますか？", class: "btn-sm btn-danger destroy_book_#{@book.id}" %>
+						</td>
+					<% end %>
 				</tr>
 			</table>
-
+		</div>
 	</div>
-</div>
 
+</div>
